@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gen AI Environmental Impact Calculator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f6f8;
+        }
+        .container {
+            max-width: 500px;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            margin: auto;
+        }
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+        }
+        label {
+            font-weight: bold;
+            display: block;
+            margin-top: 10px;
+        }
+        input {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background: #3498db;
+            color: white;
+            border: none;
+            margin-top: 15px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #2980b9;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            background: #ecf0f1;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Gen AI Impact Calculator</h1>
+
+    <label for="trainingHours">Training Hours</label>
+    <input type="number" id="trainingHours" placeholder="Enter total training hours">
+
+    <label for="numGPUs">Number of GPUs</label>
+    <input type="number" id="numGPUs" placeholder="Enter number of GPUs used">
+
+    <label for="gpuPower">GPU Power (Watts)</label>
+    <input type="number" id="gpuPower" placeholder="E.g. 400 for NVIDIA A100">
+
+    <label for="pue">PUE (Power Usage Effectiveness)</label>
+    <input type="number" id="pue" value="1.2">
+
+    <button onclick="calculateImpact()">Calculate Impact</button>
+
+    <div id="results" class="result" style="display:none;"></div>
+</div>
+
+<script>
+function calculateImpact() {
+    let hours = parseFloat(document.getElementById("trainingHours").value);
+    let gpus = parseFloat(document.getElementById("numGPUs").value);
+    let gpuPower = parseFloat(document.getElementById("gpuPower").value);
+    let pue = parseFloat(document.getElementById("pue").value);
+
+    if (isNaN(hours) || isNaN(gpus) || isNaN(gpuPower) || isNaN(pue)) {
+        alert("Please fill in all fields with valid numbers.");
+        return;
+    }
+
+    // Electrical consumption (kWh)
+    let electricityKWh = (hours * gpus * gpuPower * pue) / 1000;
+
+    // CO2 emissions (assuming 0.45 kg CO2 per kWh, adjustable)
+    let co2Kg = electricityKWh * 0.45;
+
+    // Water use (assuming 1 liter per kWh, adjustable)
+    let waterLiters = electricityKWh * 1;
+
+    let resultDiv = document.getElementById("results");
+    resultDiv.style.display = "block";
+    resultDiv.innerHTML = `
+        <h3>Results:</h3>
+        <p><strong>Electricity Use:</strong> ${electricityKWh.toFixed(2)} kWh</p>
+        <p><strong>CO₂ Emissions:</strong> ${co2Kg.toFixed(2)} kg</p>
+        <p><strong>Water Use:</strong> ${waterLiters.toFixed(2)} liters</p>
+    `;
+}
+</script>
+
+</body>
+</html>
